@@ -14,22 +14,16 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);      
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-
+        if (Auth::attempt($credentials)) {            
             return response()->json(['user' => auth()->user()]);
         }
 
         return response()->json([ 'error' => 'The provided credentials do not match our records.'], 401);
     } 
 
-    public function logout(Request $request)
+    public function logout()
     {
         Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
 
         return response()->json(['message' => 'Logout Successfull']);
     }
