@@ -12,10 +12,17 @@ class Product extends Model
 
     protected $guarded = [];
     
+    protected $appends = ['image'];
+
     public function setNameAttribute($value)
     {
         $this->attributes['name'] = $value;
         $this->attributes['slug'] = Str::slug($value);
+    }
+
+    public function getImageAttribute()
+    {
+        return '/storage/'.$this->attributes['image'];
     }
 
     public function category()
