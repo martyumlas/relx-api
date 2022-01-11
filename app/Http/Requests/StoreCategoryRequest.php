@@ -16,6 +16,13 @@ class StoreCategoryRequest extends FormRequest
         return true;
     }
 
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'description' => strip_tags($this->description)
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -25,11 +32,7 @@ class StoreCategoryRequest extends FormRequest
     {
         return [
             'name' => 'required|min:3|unique:categories',
-            'description' => ['required', function ($attribute, $value, $fail) {
-                if (strlen(strip_tags($value)) < 3) {
-                    $fail('The '.$attribute.' must be atleast 3 characters.');
-                }
-            },]
+            'description' => 'required|min:3'
         ];
     }
 }

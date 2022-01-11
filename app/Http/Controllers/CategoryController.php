@@ -26,14 +26,14 @@ class CategoryController extends Controller
     {
         $category = Category::create($request->safe()->only(['name', 'description']));
 
-        return response()->json(['category' => $category, 'message' => 'Category created']);
+        return response()->json(['category' => new CategoryResource($category) , 'message' => 'Category created']);
     }
 
     public function update(Category $category, UpdateCategoryRequest $request) 
     {       
         $category->update($request->safe()->only(['name', 'description']));
 
-        return response()->json(['category' => $category, 'message' => 'Category updated']);
+        return response()->json(['category' => new CategoryResource($category), 'message' => 'Category updated']);
     }
 
     public function show(Category $category)

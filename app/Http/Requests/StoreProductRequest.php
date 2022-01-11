@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateCategoryRequest extends FormRequest
+class StoreProductRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -16,12 +16,14 @@ class UpdateCategoryRequest extends FormRequest
         return true;
     }
 
+
     public function prepareForValidation()
     {
         $this->merge([
             'description' => strip_tags($this->description)
         ]);
     }
+
 
     /**
      * Get the validation rules that apply to the request.
@@ -31,8 +33,11 @@ class UpdateCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|unique:categories,name,'.$this->category->id,
-            'description' => 'required|min:3'
+            'name' => 'required|min:3|unique:products',
+            'description' => 'required|min:3',
+            'price' => 'required|numeric',
+            'category_id' => 'required',
+            'image' => 'nullable|image'
         ];
     }
 }
