@@ -19,7 +19,7 @@ class CategoryResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
-            'description' => Str::limit(strip_tags($this->description), 100) 
+            'description' => $this->description
         ];
     }
 }

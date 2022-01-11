@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreCategoryRequest;
-use App\Http\Requests\UpdateCategoryRequest;
-use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Http\Resources\CategoryResource;
+use App\Http\Resources\CategoryCollection;
+use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -18,7 +19,7 @@ class CategoryController extends Controller
             $query->where('name', 'like', $search .'%');
         })->latest()->paginate(5);
 
-        return CategoryResource::collection($categories);
+        return new CategoryCollection($categories);
     }
 
     public function create(StoreCategoryRequest $request)
@@ -37,7 +38,7 @@ class CategoryController extends Controller
 
     public function show(Category $category)
     {
-        return response()->json(['category' => $category ]);
+        return response()->json(['category' => new CategoryResource($category)]);
     }
 
     public function delete(Category $category)
