@@ -29,7 +29,8 @@ class Category extends Model
     {
         static::deleting(function ($category) {
             $category->products->each(function ($product) {
-                Storage::delete($product->image);
+                Storage::disk('public')->delete($product->image_url);
+                Storage::disk('public')->delete($product->thumbnail_url);
             });
         });
     }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
@@ -12,7 +13,7 @@ class Product extends Model
 
     protected $guarded = [];
     
-    protected $appends = ['image'];
+    protected $appends = ['image', 'image_url'];
 
     public function setNameAttribute($value)
     {
@@ -22,7 +23,22 @@ class Product extends Model
 
     public function getImageAttribute()
     {
-        return '/storage/'.$this->attributes['image'];
+        return Storage::url($this->attributes['image']);
+    }
+
+    public function getImageUrlAttribute()
+    {
+        return $this->attributes['image'];
+    }
+
+    public function getThumbnailAttribute()
+    {
+        return Storage::url($this->attributes['thumbnail']);
+    }
+
+    public function getThumbnailUrlAttribute()
+    {
+        return $this->attributes['thumbnail'];
     }
 
     public function category()
