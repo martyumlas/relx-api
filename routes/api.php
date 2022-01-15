@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +28,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/category/{category}', [CategoryController::class, 'show']);
     Route::patch('/category/{category}', [CategoryController::class, 'update']);
     Route::delete('/category/{category}', [CategoryController::class, 'delete']);
+    Route::get('/all-categories', [CategoryController::class, 'allCategories']);
 
     Route::get('/products', [ProductController::class, 'index']);
     Route::post('/product', [ProductController::class, 'store']);

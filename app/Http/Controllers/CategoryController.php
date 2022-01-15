@@ -51,4 +51,10 @@ class CategoryController extends Controller
             return response()->json($exception->getMessage());
         }        
     }
+    
+    public function allCategories()
+    {
+        $categories = Category::select('id', 'name')->orderBy('name')->get();
+        return response()->json(['categories' => $categories]);
+    }
 }

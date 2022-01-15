@@ -8,10 +8,12 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\ProductCollection;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Traits\ImageUpload;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    use ImageUpload;
     /**
      * Display a listing of the resource.
      *
@@ -38,22 +40,18 @@ class ProductController extends Controller
         $data = $request->safe()->except('image');
         $img = $request->file('image');        
         if($img) {
-
             
-            $path = $img->storeAs('products', $request->file('image')->hashName(), 'public');
+            $path = 'products/'.$img->hashName();
+            
+            $this->upload('public', $img, $path, null);
+
             $data['image'] = $path;
 
-            $thumb = Image::make($img)->resize(100, 100);
+            $thumbPath = 'thumbnail/'.$img->hashName();
             
-            if(!Storage::exists('public/thumbnail')) {
-                Storage::makeDirectory('public/thumbnail');
-            } 
+            $this->upload('public', $img, $thumbPath, 'thumbnail');
 
-            $thumb->save(storage_path('app/public/thumbnail/').$img->hashName());
-            $data['thumbnail'] = 'thumbnail/'.$img->hashName();
-
- 
-    
+            $data['thumbnail'] = $thumbPath;
             
         }
 
@@ -84,12 +82,22 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, Product $product)
     {
         $data = $request->safe()->except('image');
-
-        if($request->file('image')) {
-            Storage::delete($product->image);
-            $path = $request->file('image')->storeAs('products', $request->file('image')->hashName(), 'public');
+        $img = $request->file('image');
+        if($img) {
+            $this->deleteUpload('public', $product->image);
+            $this->deleteUpload('public', $product->thumbnail);
+            
+            $path = 'products/'.$img->hashName();
+            
+            $this->upload('public', $img, $path, null);
 
             $data['image'] = $path;
+
+            $thumbPath = 'thumbnail/'.$img->hashName();
+            
+            $this->upload('public', $img, $thumbPath, 'thumbnail');
+
+            $data['thumbnail'] = $thumbPath;
         }
 
         $product->update($data);
@@ -106,13 +114,14 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         if($product->image) {
-             Storage::disk('public')->delete($product->image_url);
+           $this->deleteUpload('public',$product->image);
         }
         if($product->thumbnail) {
-            Storage::disk('public')->delete($product->thumbnail_url);
+            $this->deleteUpload('public',$product->thumbnail);
         }
 
          $product->delete();
         return response()->json(['message' => 'Product Deleted']);
     }
+    
 }

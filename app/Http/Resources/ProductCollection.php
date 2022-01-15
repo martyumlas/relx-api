@@ -24,7 +24,7 @@ class ProductCollection extends ResourceCollection
                     'slug' => $product->slug,
                     'price' => $product->price,
                     'category' => $product->category->name,
-                    'image' => Storage::url($product->thumbnail_url)
+                    'image' => Storage::url($product->thumbnail)
                 ];
             })
         ];
